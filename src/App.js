@@ -531,7 +531,7 @@ const Skills = () => {
       .attr("fill", "#333")
       .style("font-size", "12px")
       .text((_, i) => categories[i].title);
-  }, []);
+  }, [categories]);
 
   return (
     <section className="section" id="skills">
