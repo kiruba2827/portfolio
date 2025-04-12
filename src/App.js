@@ -322,120 +322,1183 @@ const Navigation = ({ activeSection, setActiveSection }) => {
 };
 
 // Home Component with improved layout
-const Home = () => (
-  <section className="section hero-section" id="home">
-    <div className="hero-content">
-      <div className="profile-container">
-        <img src="/profile.jpg" alt="Profile" className="profile-img" />
-      </div>
-      <div className="hero-text">
-        <h1 className="spinning-text">
-          {"K. Malar Kiruba".split("").map((char, index) => (
-            <span key={index} style={{ animationDelay: `${index * 0.1}s` }}>
-              {char}
-            </span>
-          ))}
-        </h1>
-        <h2 className="profession">
-          Computer Science Student & Full-Stack Developer
-        </h2>
-        <p className="tagline">
-          Specializing in cloud solutions, web development, and cybersecurity
-        </p>
-        <div className="location-contact">
-          <p>
-            <i className="fas fa-map-marker-alt"></i> Chennai, Tamil Nadu
-          </p>
-          <p>
-            <i className="fas fa-phone"></i> +91-6379518003
-          </p>
-          <p>
-            <i className="fas fa-envelope"></i> kalaimani2827@gmail.com
-          </p>
-        </div>
-        <div className="social-links">
-          <a
-            href="https://www.linkedin.com/in/malar-kiruba-8847a0343/?trk=opento_nprofile_details"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="social-button linkedin"
-          >
-            <i className="fab fa-linkedin"></i> LinkedIn
-          </a>
-          <a
-            href="https://github.com/kiruba2827"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="social-button github"
-          >
-            <i className="fab fa-github"></i> GitHub
-          </a>
-        </div>
+const Home = () => {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    {
+      type: "bot",
+      text: 'Hi there! I can help you navigate through this portfolio. Try asking about sections like "projects" or "skills".',
+    },
+  ]);
+  const [inputValue, setInputValue] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const outputRef = useRef(null);
+  const inputRef = useRef(null);
 
-        {/* Download Resume Button */}
-        <div className="resume-download">
-          <a
-            href="/Kiruba_Resume.docx" // Make sure this file is placed in the public folder
-            download
-            className="download-button"
-          >
-            <i className="fas fa-download"></i> Download Resume
-          </a>
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    if (outputRef.current) {
+      outputRef.current.scrollTop = outputRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // Focus input when chat opens
+  useEffect(() => {
+    if (isChatOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isChatOpen]);
+
+  const getBotReply = (userInput) => {
+    const input = userInput.toLowerCase().trim();
+
+    // Keywords matching
+    if (input.includes("home")) {
+      return "You are currently on the Home section. This is where you can find my introduction and contact details.";
+    } else if (input.includes("about")) {
+      return "The About section contains information about my background, interests, and career goals.";
+    } else if (input.includes("experience") || input.includes("work")) {
+      return "In the Experience section, you'll find my professional journey including roles at various companies, responsibilities, and achievements.";
+    } else if (input.includes("education") || input.includes("study")) {
+      return "My Education section details my academic background, including my Computer Science degree and relevant coursework.";
+    } else if (input.includes("skills") || input.includes("technologies")) {
+      return "The Skills section showcases my technical expertise including programming languages, frameworks, and tools I'm proficient in.";
+    } else if (input.includes("projects") || input.includes("portfolio")) {
+      return "I've highlighted my best work in the Projects section. Each project includes details about technologies used and my contributions.";
+    } else if (
+      input.includes("certificates") ||
+      input.includes("certification")
+    ) {
+      return "All my professional certifications and completed courses are listed in the Certificates section.";
+    } else if (
+      input.includes("contact") ||
+      input.includes("email") ||
+      input.includes("call")
+    ) {
+      return "You can reach me through the Contact section or directly at kalaimani2827@gmail.com and +91-6379518003.";
+    } else if (
+      input.includes("resume") ||
+      input.includes("cv") ||
+      input.includes("download")
+    ) {
+      return "You can download my resume using the 'Download Resume' button on this page.";
+    } else if (input.includes("github")) {
+      return "Check out my code repositories at github.com/kiruba2827";
+    } else if (input.includes("linkedin")) {
+      return "Connect with me on LinkedIn at linkedin.com/in/malar-kiruba-8847a0343";
+    } else if (input.includes("location") || input.includes("where")) {
+      return "I'm based in Chennai, Tamil Nadu, India.";
+    } else if (input.includes("help") || input.includes("commands")) {
+      return "You can ask about: home, about, experience, education, skills, projects, certificates, contact, resume, github, linkedin, location, or my background in web development, cloud solutions, and cybersecurity.";
+    } else if (
+      input.includes("hello") ||
+      input.includes("hi") ||
+      input.includes("hey")
+    ) {
+      return "Hello! How can I help you navigate through Malar Kiruba's portfolio today?";
+    } else if (input.includes("thank") || input.includes("thanks")) {
+      return "You're welcome! Let me know if you need anything else.";
+    } else if (
+      input.includes("cloud") ||
+      input.includes("aws") ||
+      input.includes("azure")
+    ) {
+      return "Malar Kiruba specializes in cloud solutions including AWS and Azure services for scalable application deployment.";
+    } else if (input.includes("web") || input.includes("development")) {
+      return "As a Full-Stack Developer, Malar has experience with React, Node.js, and various modern web technologies.";
+    } else if (input.includes("cyber") || input.includes("security")) {
+      return "Cybersecurity is one of Malar's areas of expertise, with knowledge in secure coding practices and penetration testing.";
+    } else if (input.includes("clear") || input.includes("reset")) {
+      setTimeout(() => {
+        setMessages([
+          { type: "bot", text: "Chat history cleared. How can I help you?" },
+        ]);
+      }, 500);
+      return "Clearing chat history...";
+    } else {
+      return "I'm not sure I understand. Try asking about specific sections like 'projects' or 'skills', or type 'help' for guidance.";
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (!inputValue.trim()) return;
+
+    // Add user message
+    setMessages((prev) => [...prev, { type: "user", text: inputValue }]);
+
+    // Show typing indicator
+    setIsTyping(true);
+
+    // Simulate bot thinking time
+    setTimeout(() => {
+      const botResponse = getBotReply(inputValue);
+      setMessages((prev) => [...prev, { type: "bot", text: botResponse }]);
+      setIsTyping(false);
+    }, 600);
+
+    setInputValue("");
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSendMessage();
+    }
+  };
+
+  const handleHelpClick = () => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        type: "bot",
+        text: "Here's what you can ask me about:\n• Home - Current section\n• About - My background\n• Experience - Work history\n• Education - Academic credentials\n• Skills - Technical expertise\n• Projects - Portfolio highlights\n• Certificates - Professional certifications\n• Contact - How to reach me\n• Resume - Download my CV\n\nYou can also ask about my specialties in cloud solutions, web development, and cybersecurity.",
+      },
+    ]);
+  };
+
+  return (
+    <section className="section hero-section" id="home">
+      <div className="hero-content">
+        <div className="profile-container">
+          <img src="/profile.jpg" alt="Profile" className="profile-img" />
+        </div>
+        <div className="hero-text">
+          <h1 className="spinning-text">
+            {"K. Malar Kiruba".split("").map((char, index) => (
+              <span key={index} style={{ animationDelay: `${index * 0.1}s` }}>
+                {char}
+              </span>
+            ))}
+          </h1>
+          <h2 className="profession">
+            Computer Science Student & Full-Stack Developer
+          </h2>
+          <p className="tagline">
+            Specializing in cloud solutions, web development, and cybersecurity
+          </p>
+          <div className="location-contact">
+            <p>
+              <i className="fas fa-map-marker-alt"></i> Chennai, Tamil Nadu
+            </p>
+            <p>
+              <i className="fas fa-phone"></i> +91-6379518003
+            </p>
+            <p>
+              <i className="fas fa-envelope"></i> kalaimani2827@gmail.com
+            </p>
+          </div>
+          <div className="social-links">
+            <a
+              href="https://www.linkedin.com/in/malar-kiruba-8847a0343/?trk=opento_nprofile_details"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="social-button linkedin"
+            >
+              <i className="fab fa-linkedin"></i> LinkedIn
+            </a>
+            <a
+              href="https://github.com/kiruba2827"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="social-button github"
+            >
+              <i className="fab fa-github"></i> GitHub
+            </a>
+          </div>
+          <div className="resume-download">
+            <a href="/Kiruba_Resume.docx" download className="download-button">
+              <i className="fas fa-download"></i> Download Resume
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-    <div className="scroll-down">
-      <span>Scroll Down</span>
-      <i className="fas fa-chevron-down"></i>
-    </div>
-  </section>
-);
 
+      <div className="scroll-down">
+        <span>Scroll Down</span>
+        <i className="fas fa-chevron-down"></i>
+      </div>
+
+      {/* Chatbot */}
+      <div className={`chatbot-wrapper ${isChatOpen ? "open" : "closed"}`}>
+        <button
+          className="chat-toggle-button"
+          onClick={() => setIsChatOpen(!isChatOpen)}
+        >
+          {isChatOpen ? (
+            <>
+              <i className="fas fa-times"></i> Close Chat
+            </>
+          ) : (
+            <>
+              <i className="fas fa-comment"></i> Chat with Me
+            </>
+          )}
+        </button>
+
+        {isChatOpen && (
+          <div className="chatbot-container">
+            <div className="chatbot-header">
+              <span>
+                <i className="fas fa-robot"></i> Portfolio Assistant
+              </span>
+              <div className="chatbot-actions">
+                <button
+                  onClick={handleHelpClick}
+                  className="help-button"
+                  title="Get Help"
+                >
+                  <i className="fas fa-question-circle"></i>
+                </button>
+                <button
+                  onClick={() =>
+                    setMessages([
+                      {
+                        type: "bot",
+                        text: "How can I help you navigate through this portfolio?",
+                      },
+                    ])
+                  }
+                  className="clear-button"
+                  title="Clear Chat"
+                >
+                  <i className="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
+
+            <div className="chatbot-output" ref={outputRef}>
+              {messages.map((msg, index) => (
+                <div key={index} className={`chat-message ${msg.type}-message`}>
+                  <div className="message-avatar">
+                    {msg.type === "bot" ? (
+                      <i className="fas fa-robot"></i>
+                    ) : (
+                      <i className="fas fa-user"></i>
+                    )}
+                  </div>
+                  <div className="message-content">{msg.text}</div>
+                </div>
+              ))}
+              {isTyping && (
+                <div className="chat-message bot-message typing">
+                  <div className="message-avatar">
+                    <i className="fas fa-robot"></i>
+                  </div>
+                  <div className="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="chatbot-input-container">
+              <input
+                type="text"
+                placeholder="Ask about my portfolio..."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                ref={inputRef}
+                className="chatbot-input"
+              />
+              <button
+                onClick={handleSendMessage}
+                className="send-button"
+                disabled={!inputValue.trim()}
+              >
+                <i className="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
 // About Component with visual enhancements
-const About = () => (
-  <section className="section" id="about">
-    <div className="section-header">
-      <h2>About Me</h2>
-      <div className="underline"></div>
-    </div>
-    <div className="about-content">
-      <div className="about-text">
-        <p>
-          I'm a dynamic Computer Science student with hands-on experience at
-          C-DAC, where I've developed RESTful APIs, enhanced network monitoring
-          systems, and implemented security measures following OWASP guidelines.
-        </p>
-        <p>
-          My expertise spans full-stack web development, cloud infrastructure,
-          and network security. I excel at optimizing system performance and
-          integrating complex functionalities in diverse technical environments.
-        </p>
-        <p>
-          I'm seeking opportunities to apply my technical expertise where I can
-          continue to grow while making meaningful contributions to innovative
-          projects.
-        </p>
+const About = () => {
+  const graphRef = useRef(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedSkill, setSelectedSkill] = useState(null);
+
+  // Skill details for modal content
+  const skillDetails = {
+    fullstack: {
+      title: "Full-Stack Development",
+      description:
+        "Building end-to-end web applications using modern frameworks and technologies. Creating seamless user experiences with responsive design.",
+      experience: "4+ years of experience developing full-stack applications",
+      keyTechnologies: [
+        "React",
+        "Node.js",
+        "Express",
+        "MongoDB",
+        "Django",
+        "RESTful APIs",
+      ],
+      projects: [
+        "Portfolio Website",
+        "E-commerce Platform",
+        "Inventory Management System",
+      ],
+    },
+    cloud: {
+      title: "Cloud Solutions",
+      description:
+        "Designing and implementing scalable cloud infrastructure. Creating efficient deployment pipelines and optimizing resource utilization.",
+      experience: "3+ years working with cloud platforms",
+      keyTechnologies: [
+        "Oracle Cloud",
+        "OpenStack",
+        "Hadoop",
+        "Containerization",
+        "Auto-scaling",
+      ],
+      projects: [
+        "Cloud Migration Project",
+        "Distributed Database System",
+        "Serverless API Implementation",
+      ],
+    },
+    security: {
+      title: "Security",
+      description:
+        "Implementing robust security measures to protect data and systems. Conducting security audits and addressing vulnerabilities.",
+      experience: "3 years of cybersecurity implementation",
+      keyTechnologies: [
+        "OWASP Top 10",
+        "Ethical Hacking",
+        "Penetration Testing",
+        "Encryption",
+        "Firewall Configuration",
+      ],
+      projects: [
+        "Security Audit System",
+        "Zero-Trust Network Implementation",
+        "Secure Authentication Service",
+      ],
+    },
+    react: {
+      title: "React",
+      description:
+        "Building modern, responsive user interfaces with React's component-based architecture.",
+      experience: "3+ years of React development",
+      keyTechnologies: [
+        "React Hooks",
+        "Context API",
+        "Redux",
+        "Material UI",
+        "Styled Components",
+      ],
+      projects: [
+        "Interactive Dashboard",
+        "Single Page Application",
+        "Progressive Web App",
+      ],
+    },
+    node: {
+      title: "Node.js",
+      description:
+        "Creating scalable backend services using JavaScript on the server-side with Node.js.",
+      experience: "3 years of Node.js development",
+      keyTechnologies: [
+        "Express.js",
+        "Socket.io",
+        "Mongoose",
+        "JWT Authentication",
+        "Microservices",
+      ],
+      projects: [
+        "RESTful API Service",
+        "Real-time Chat Application",
+        "Authentication System",
+      ],
+    },
+    express: {
+      title: "Express",
+      description:
+        "Building robust web APIs and middleware using Express.js framework.",
+      experience: "3 years using Express.js",
+      keyTechnologies: [
+        "Middleware",
+        "Routing",
+        "Error Handling",
+        "API Design",
+        "MVC Pattern",
+      ],
+      projects: [
+        "Backend Service API",
+        "Authentication Middleware",
+        "Data Processing Service",
+      ],
+    },
+    mongodb: {
+      title: "MongoDB",
+      description:
+        "Implementing NoSQL database solutions with MongoDB for flexible data storage.",
+      experience: "3 years working with MongoDB",
+      keyTechnologies: [
+        "Document Modeling",
+        "Aggregation Pipeline",
+        "Indexing",
+        "Mongoose ODM",
+        "Replication",
+      ],
+      projects: [
+        "Content Management System",
+        "User Data Store",
+        "Analytics Database",
+      ],
+    },
+    django: {
+      title: "Django",
+      description:
+        "Creating Python-based web applications with Django's powerful features.",
+      experience: "2 years of Django development",
+      keyTechnologies: [
+        "Django ORM",
+        "Django REST Framework",
+        "Templates",
+        "Authentication",
+        "Admin Panel",
+      ],
+      projects: [
+        "Content Management System",
+        "Data Analysis Dashboard",
+        "Automated Reporting Tool",
+      ],
+    },
+    rest: {
+      title: "RESTful APIs",
+      description:
+        "Designing and implementing RESTful services for seamless integration between systems.",
+      experience: "4+ years building RESTful APIs",
+      keyTechnologies: [
+        "REST Principles",
+        "API Versioning",
+        "Documentation",
+        "Rate Limiting",
+        "HATEOAS",
+      ],
+      projects: [
+        "Integration Services",
+        "Third-party API Connectors",
+        "Mobile App Backend",
+      ],
+    },
+    oracle: {
+      title: "Oracle Cloud",
+      description:
+        "Leveraging Oracle Cloud Infrastructure to build scalable and reliable applications.",
+      experience: "2 years working with Oracle Cloud",
+      keyTechnologies: [
+        "Compute",
+        "Storage",
+        "Networking",
+        "Database",
+        "Load Balancing",
+      ],
+      projects: [
+        "Enterprise Application Hosting",
+        "Disaster Recovery System",
+        "Database Migration",
+      ],
+    },
+    openstack: {
+      title: "OpenStack",
+      description:
+        "Creating private cloud solutions with OpenStack's open-source platform.",
+      experience: "2 years implementing OpenStack",
+      keyTechnologies: ["Nova", "Swift", "Neutron", "Keystone", "Heat"],
+      projects: [
+        "Private Cloud Setup",
+        "Virtual Machine Management",
+        "Software-Defined Networking",
+      ],
+    },
+    hadoop: {
+      title: "Hadoop",
+      description:
+        "Processing and analyzing large datasets with Hadoop's distributed computing framework.",
+      experience: "2 years working with Hadoop ecosystem",
+      keyTechnologies: ["HDFS", "MapReduce", "Hive", "Spark", "Yarn"],
+      projects: [
+        "Big Data Processing Pipeline",
+        "Log Analysis System",
+        "Batch Processing System",
+      ],
+    },
+    container: {
+      title: "Containerization",
+      description:
+        "Packaging applications and dependencies into portable containers for consistent deployment.",
+      experience: "3 years of containerization experience",
+      keyTechnologies: [
+        "Docker",
+        "Kubernetes",
+        "Docker Compose",
+        "Container Orchestration",
+        "Microservices",
+      ],
+      projects: [
+        "Microservices Architecture",
+        "CI/CD Pipeline",
+        "Service Mesh Implementation",
+      ],
+    },
+    scaling: {
+      title: "Auto-scaling",
+      description:
+        "Implementing automated scaling solutions to handle varying workloads efficiently.",
+      experience: "2+ years implementing auto-scaling solutions",
+      keyTechnologies: [
+        "Horizontal Scaling",
+        "Vertical Scaling",
+        "Load Balancing",
+        "Resource Monitoring",
+        "Performance Optimization",
+      ],
+      projects: [
+        "Traffic Surge Management",
+        "Resource Optimization System",
+        "Cost-effective Scaling Solution",
+      ],
+    },
+    owasp: {
+      title: "OWASP Security",
+      description:
+        "Applying OWASP guidelines to build secure web applications and protect against common vulnerabilities.",
+      experience: "3 years working with OWASP standards",
+      keyTechnologies: [
+        "Injection Prevention",
+        "XSS Protection",
+        "CSRF Mitigation",
+        "Secure Authentication",
+        "Security Headers",
+      ],
+      projects: [
+        "Security Compliance System",
+        "Vulnerability Scanner",
+        "Security Training Platform",
+      ],
+    },
+    ethical: {
+      title: "Ethical Hacking",
+      description:
+        "Using ethical hacking techniques to identify and address security vulnerabilities.",
+      experience: "2 years of ethical hacking practice",
+      keyTechnologies: [
+        "Penetration Testing",
+        "Vulnerability Assessment",
+        "Social Engineering",
+        "Network Scanning",
+        "Security Auditing",
+      ],
+      projects: [
+        "Security Assessment Tool",
+        "Penetration Testing Framework",
+        "Security Reporting System",
+      ],
+    },
+    penetration: {
+      title: "Penetration Testing",
+      description:
+        "Conducting thorough penetration tests to discover and remediate security weaknesses.",
+      experience: "2 years of penetration testing",
+      keyTechnologies: [
+        "Web Application Testing",
+        "Network Testing",
+        "Exploitation",
+        "Privilege Escalation",
+        "Post-Exploitation",
+      ],
+      projects: [
+        "Automated Security Scanner",
+        "Compliance Testing Tool",
+        "Vulnerability Management System",
+      ],
+    },
+    encryption: {
+      title: "Encryption",
+      description:
+        "Implementing strong encryption to protect sensitive data both at rest and in transit.",
+      experience: "3 years of encryption implementation",
+      keyTechnologies: [
+        "Symmetric Encryption",
+        "Asymmetric Encryption",
+        "Hashing",
+        "PKI",
+        "TLS/SSL",
+      ],
+      projects: [
+        "Secure Communication System",
+        "Data Protection Service",
+        "Key Management Solution",
+      ],
+    },
+    firewall: {
+      title: "Firewall",
+      description:
+        "Configuring and managing firewalls to protect networks and systems from unauthorized access.",
+      experience: "2 years of firewall management",
+      keyTechnologies: [
+        "Network Filtering",
+        "Application Firewall",
+        "Packet Inspection",
+        "Rule Management",
+        "Intrusion Prevention",
+      ],
+      projects: [
+        "Network Security System",
+        "Zero-Trust Implementation",
+        "Segmentation Strategy",
+      ],
+    },
+  };
+
+  useEffect(() => {
+    // Capture the current value of the ref
+    const currentRef = graphRef.current;
+
+    if (currentRef) {
+      createForceDirectedGraph();
+    }
+
+    // Clean up function using the captured value
+    return () => {
+      if (currentRef) {
+        d3.select(currentRef).selectAll("*").remove();
+      }
+    };
+  });
+
+  const handleNodeClick = (nodeData) => {
+    setSelectedSkill(nodeData.id);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const createForceDirectedGraph = () => {
+    // Clear any existing SVG
+    d3.select(graphRef.current).selectAll("*").remove();
+
+    // Graph data - skills clusters
+    const data = {
+      nodes: [
+        // Main clusters
+        { id: "fullstack", group: 1, label: "Full-Stack", size: 22 },
+        { id: "cloud", group: 2, label: "Cloud", size: 22 },
+        { id: "security", group: 3, label: "Security", size: 22 },
+
+        // Full-stack related skills
+        { id: "react", group: 1, label: "React", size: 14 },
+        { id: "node", group: 1, label: "Node.js", size: 14 },
+        { id: "express", group: 1, label: "Express", size: 12 },
+        { id: "mongodb", group: 1, label: "MongoDB", size: 12 },
+        { id: "django", group: 1, label: "Django", size: 14 },
+        { id: "rest", group: 1, label: "RESTful APIs", size: 16 },
+
+        // Cloud related skills
+        { id: "oracle", group: 2, label: "Oracle Cloud", size: 14 },
+        { id: "openstack", group: 2, label: "OpenStack", size: 14 },
+        { id: "hadoop", group: 2, label: "Hadoop", size: 12 },
+        { id: "container", group: 2, label: "Containerization", size: 14 },
+        { id: "scaling", group: 2, label: "Auto-scaling", size: 12 },
+
+        // Security related skills
+        { id: "owasp", group: 3, label: "OWASP", size: 14 },
+        { id: "ethical", group: 3, label: "Ethical Hacking", size: 14 },
+        { id: "penetration", group: 3, label: "Penetration Testing", size: 12 },
+        { id: "encryption", group: 3, label: "Encryption", size: 12 },
+        { id: "firewall", group: 3, label: "Firewall", size: 12 },
+      ],
+      links: [
+        // Connect main clusters to related skills
+        { source: "fullstack", target: "react", value: 5 },
+        { source: "fullstack", target: "node", value: 5 },
+        { source: "fullstack", target: "express", value: 4 },
+        { source: "fullstack", target: "mongodb", value: 4 },
+        { source: "fullstack", target: "django", value: 5 },
+        { source: "fullstack", target: "rest", value: 5 },
+
+        { source: "cloud", target: "oracle", value: 5 },
+        { source: "cloud", target: "openstack", value: 5 },
+        { source: "cloud", target: "hadoop", value: 4 },
+        { source: "cloud", target: "container", value: 5 },
+        { source: "cloud", target: "scaling", value: 4 },
+
+        { source: "security", target: "owasp", value: 5 },
+        { source: "security", target: "ethical", value: 5 },
+        { source: "security", target: "penetration", value: 4 },
+        { source: "security", target: "encryption", value: 4 },
+        { source: "security", target: "firewall", value: 4 },
+
+        // Connect related nodes within clusters
+        { source: "react", target: "node", value: 3 },
+        { source: "node", target: "express", value: 3 },
+        { source: "express", target: "mongodb", value: 3 },
+        { source: "rest", target: "express", value: 3 },
+        { source: "rest", target: "django", value: 3 },
+
+        { source: "oracle", target: "container", value: 3 },
+        { source: "openstack", target: "scaling", value: 3 },
+        { source: "hadoop", target: "scaling", value: 3 },
+
+        { source: "owasp", target: "ethical", value: 3 },
+        { source: "ethical", target: "penetration", value: 3 },
+        { source: "encryption", target: "firewall", value: 3 },
+
+        // Cross-cluster connections
+        { source: "rest", target: "oracle", value: 2 },
+        { source: "container", target: "encryption", value: 2 },
+        { source: "node", target: "hadoop", value: 2 },
+      ],
+    };
+
+    // Set dimensions
+    const width = graphRef.current.clientWidth;
+    const height = 350;
+
+    // Create SVG
+    const svg = d3
+      .select(graphRef.current)
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [0, 0, width, height])
+      .attr("class", "skills-graph");
+
+    // Add a gradient definition
+    const defs = svg.append("defs");
+
+    // Add the missing background gradient
+    const backgroundGradient = defs
+      .append("linearGradient")
+      .attr("id", "gradient-background")
+      .attr("x1", "0%")
+      .attr("y1", "0%")
+      .attr("x2", "100%")
+      .attr("y2", "100%");
+
+    backgroundGradient
+      .append("stop")
+      .attr("offset", "0%")
+      .attr("stop-color", "#f8f9fa");
+
+    backgroundGradient
+      .append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", "#e9ecef");
+
+    // Create gradients for each group
+    const gradients = {
+      1: { id: "gradient-fullstack", colors: ["#4a6cf7", "#8a9af7"] },
+      2: { id: "gradient-cloud", colors: ["#3acf87", "#8adfb0"] },
+      3: { id: "gradient-security", colors: ["#f7774a", "#f7a98a"] },
+    };
+
+    Object.values(gradients).forEach((gradient) => {
+      const gradDef = defs
+        .append("linearGradient")
+        .attr("id", gradient.id)
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "100%");
+
+      gradDef
+        .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", gradient.colors[0]);
+
+      gradDef
+        .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", gradient.colors[1]);
+    });
+
+    // Add glow filter
+    const filter = defs
+      .append("filter")
+      .attr("id", "glow")
+      .attr("height", "300%")
+      .attr("width", "300%")
+      .attr("x", "-100%")
+      .attr("y", "-100%");
+
+    filter
+      .append("feGaussianBlur")
+      .attr("stdDeviation", "2.5")
+      .attr("result", "coloredBlur");
+
+    const feMerge = filter.append("feMerge");
+    feMerge.append("feMergeNode").attr("in", "coloredBlur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+    // Create simulation
+    const simulation = d3
+      .forceSimulation(data.nodes)
+      .force(
+        "link",
+        d3
+          .forceLink(data.links)
+          .id((d) => d.id)
+          .distance((d) => 120 - d.value * 10)
+      )
+      .force("charge", d3.forceManyBody().strength(-200))
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .force(
+        "collision",
+        d3.forceCollide().radius((d) => d.size + 15)
+      );
+
+    // Create the graph background
+    svg
+      .append("rect")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("fill", "url(#gradient-background)")
+      .attr("rx", 10)
+      .attr("ry", 10);
+
+    // Create links with varying opacity based on value
+    const link = svg
+      .append("g")
+      .attr("class", "links")
+      .selectAll("line")
+      .data(data.links)
+      .enter()
+      .append("line")
+      .attr("stroke", (d) => {
+        const sourceGroup = data.nodes.find(
+          (n) => n.id === d.source.id || n.id === d.source
+        ).group;
+        const targetGroup = data.nodes.find(
+          (n) => n.id === d.target.id || n.id === d.target
+        ).group;
+
+        if (sourceGroup === targetGroup) {
+          switch (sourceGroup) {
+            case 1:
+              return "#4a6cf7";
+            case 2:
+              return "#3acf87";
+            case 3:
+              return "#f7774a";
+            default:
+              return "#999";
+          }
+        }
+        return "#999";
+      })
+      .attr("stroke-opacity", (d) => 0.2 + d.value * 0.15)
+      .attr("stroke-width", (d) => Math.sqrt(d.value) * 0.8);
+
+    // Create node groups
+    const node = svg
+      .append("g")
+      .attr("class", "nodes")
+      .selectAll("g")
+      .data(data.nodes)
+      .enter()
+      .append("g")
+      .attr("class", "node-group")
+      .call(
+        d3
+          .drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended)
+      )
+      .on("click", (event, d) => handleNodeClick(d));
+
+    // Add circles to nodes with gradient fills - Fix the gradient URL
+    node
+      .append("circle")
+      .attr("r", (d) => d.size)
+      .attr("fill", (d) => `url(#${gradients[d.group].id})`) // Fixed gradient reference
+      .attr("stroke", (d) => {
+        switch (d.group) {
+          case 1:
+            return "#3451b2";
+          case 2:
+            return "#2a9f65";
+          case 3:
+            return "#c24d26";
+          default:
+            return "#fff";
+        }
+      })
+      .attr("stroke-width", 2)
+      .attr("filter", "url(#glow)")
+      .attr("cursor", "pointer");
+
+    // Add node labels with background for better readability
+    const labels = node.append("g").attr("class", "node-label");
+
+    // Label background
+    labels
+      .append("rect")
+      .attr("x", (d) => -(d.label.length * 3.5 + 6) / 2)
+      .attr("y", (d) => d.size + 2)
+      .attr("width", (d) => d.label.length * 3.5 + 6)
+      .attr("height", 16)
+      .attr("rx", 8)
+      .attr("ry", 8)
+      .attr("fill", "rgba(255, 255, 255, 0.9)")
+      .attr("stroke", (d) => {
+        switch (d.group) {
+          case 1:
+            return "#4a6cf7";
+          case 2:
+            return "#3acf87";
+          case 3:
+            return "#f7774a";
+          default:
+            return "#999";
+        }
+      })
+      .attr("stroke-width", 0.5)
+      .attr("opacity", 0.8);
+
+    // Label text
+    labels
+      .append("text")
+      .text((d) => d.label)
+      .attr("x", 0)
+      .attr("y", (d) => d.size + 14)
+      .attr("text-anchor", "middle")
+      .attr("font-size", (d) => Math.min(10 + d.size / 4, 12) + "px")
+      .attr("font-weight", "500")
+      .attr("fill", "#333")
+      .attr("pointer-events", "none");
+
+    // Add hover effect
+    node
+      .on("mouseover", function (event, d) {
+        d3.select(this)
+          .select("circle")
+          .transition()
+          .duration(200)
+          .attr("r", (d) => d.size * 1.1)
+          .attr("filter", "url(#glow)");
+
+        d3.select(this)
+          .select(".node-label")
+          .transition()
+          .duration(200)
+          .attr("transform", "scale(1.1)")
+          .attr("transform-origin", "center");
+
+        // Highlight connected links
+        link
+          .transition()
+          .duration(200)
+          .attr("stroke-opacity", (l) =>
+            l.source.id === d.id || l.target.id === d.id ? 0.8 : 0.1
+          )
+          .attr("stroke-width", (l) =>
+            l.source.id === d.id || l.target.id === d.id
+              ? Math.sqrt(l.value) * 1.5
+              : Math.sqrt(l.value) * 0.5
+          );
+
+        // Highlight connected nodes
+        node
+          .transition()
+          .duration(200)
+          .style("opacity", (n) => {
+            // Check if this node is connected to the hovered node
+            const isConnected = data.links.some(
+              (l) =>
+                (l.source.id === d.id && l.target.id === n.id) ||
+                (l.source.id === n.id && l.target.id === d.id)
+            );
+            return n.id === d.id || isConnected ? 1 : 0.4;
+          });
+      })
+      .on("mouseout", function () {
+        d3.select(this)
+          .select("circle")
+          .transition()
+          .duration(200)
+          .attr("r", (d) => d.size);
+
+        d3.select(this)
+          .select(".node-label")
+          .transition()
+          .duration(200)
+          .attr("transform", "scale(1)")
+          .attr("transform-origin", "center");
+
+        // Reset link opacity and width
+        link
+          .transition()
+          .duration(200)
+          .attr("stroke-opacity", (d) => 0.2 + d.value * 0.15)
+          .attr("stroke-width", (d) => Math.sqrt(d.value) * 0.8);
+
+        // Reset all nodes opacity
+        node.transition().duration(200).style("opacity", 1);
+      });
+
+    // Add title for accessibility
+    node.append("title").text((d) => d.label);
+
+    // Update positions on tick
+    simulation.on("tick", () => {
+      link
+        .attr("x1", (d) => d.source.x)
+        .attr("y1", (d) => d.source.y)
+        .attr("x2", (d) => d.target.x)
+        .attr("y2", (d) => d.target.y);
+
+      node.attr("transform", (d) => {
+        // Keep nodes within bounds
+        d.x = Math.max(d.size, Math.min(width - d.size, d.x));
+        d.y = Math.max(d.size + 10, Math.min(height - d.size - 20, d.y));
+        return `translate(${d.x},${d.y})`;
+      });
+    });
+
+    // Drag functions
+    function dragstarted(event, d) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+  };
+
+  return (
+    <section className="section" id="about">
+      <div className="section-header">
+        <h2>About Me</h2>
+        <div className="underline"></div>
       </div>
-      <div className="key-highlights">
-        <div className="highlight-card">
-          <i className="fas fa-code"></i>
-          <h3>Full-Stack Development</h3>
-          <p>MERN Stack, Django, RESTful APIs</p>
+      <div className="about-content">
+        <div className="about-text">
+          <p>
+            I'm a dynamic Computer Science student with hands-on experience at
+            C-DAC, where I've developed RESTful APIs, enhanced network
+            monitoring systems, and implemented security measures following
+            OWASP guidelines.
+          </p>
+          <p>
+            My expertise spans full-stack web development, cloud infrastructure,
+            and network security. I excel at optimizing system performance and
+            integrating complex functionalities in diverse technical
+            environments.
+          </p>
+          <p>
+            I'm seeking opportunities to apply my technical expertise where I
+            can continue to grow while making meaningful contributions to
+            innovative projects.
+          </p>
         </div>
-        <div className="highlight-card">
-          <i className="fas fa-cloud"></i>
-          <h3>Cloud Solutions</h3>
-          <p>Oracle Cloud, OpenStack, Hadoop</p>
+
+        <div className="skills-visualization">
+          <h3>Interactive Skills Universe</h3>
+          <p className="graph-instruction">
+            Drag nodes to explore connections and click on any skill for more
+            details
+          </p>
+          <div ref={graphRef} className="skills-graph-container"></div>
         </div>
-        <div className="highlight-card">
-          <i className="fas fa-shield-alt"></i>
-          <h3>Security</h3>
-          <p>OWASP Top 10, Ethical Hacking</p>
+
+        <div className="key-highlights">
+          <div className="highlight-card">
+            {/* Add Font Awesome script in the head section of your HTML file */}
+            <i className="fas fa-code"></i>
+            <h3>Full-Stack Development</h3>
+            <p>MERN Stack, Django, RESTful APIs</p>
+          </div>
+          <div className="highlight-card">
+            <i className="fas fa-cloud"></i>
+            <h3>Cloud Solutions</h3>
+            <p>Oracle Cloud, OpenStack, Hadoop</p>
+          </div>
+          <div className="highlight-card">
+            <i className="fas fa-shield-alt"></i>
+            <h3>Security</h3>
+            <p>OWASP Top 10, Ethical Hacking</p>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-);
+
+      {/* Skill Detail Modal */}
+      {modalOpen && selectedSkill && (
+        <div className="skill-modal-overlay" onClick={closeModal}>
+          <div
+            className="skill-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button className="modal-close-button" onClick={closeModal}>
+              <i className="fas fa-times"></i>
+            </button>
+
+            <div className="modal-header">
+              <h3>{skillDetails[selectedSkill].title}</h3>
+              <div className="modal-underline"></div>
+            </div>
+
+            <div className="modal-body">
+              <p className="skill-description">
+                {skillDetails[selectedSkill].description}
+              </p>
+
+              <div className="skill-experience">
+                <i className="fas fa-history"></i>
+                <span>{skillDetails[selectedSkill].experience}</span>
+              </div>
+
+              <div className="skill-technologies">
+                <h4>Key Technologies</h4>
+                <div className="tech-tags">
+                  {skillDetails[selectedSkill].keyTechnologies.map(
+                    (tech, index) => (
+                      <span key={index} className="tech-tag">
+                        {tech}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
+
+              <div className="skill-projects">
+                <h4>Related Projects</h4>
+                <ul>
+                  {skillDetails[selectedSkill].projects.map(
+                    (project, index) => (
+                      <li key={index}>
+                        <i className="fas fa-project-diagram"></i>
+                        <span>{project}</span>
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+};
 
 // Skills Component reorganized into categories
 const Skills = () => {
@@ -531,7 +1594,7 @@ const Skills = () => {
       .attr("fill", "#333")
       .style("font-size", "12px")
       .text((_, i) => categories[i].title);
-  }, [categories]);
+  });
 
   return (
     <section className="section" id="skills">
